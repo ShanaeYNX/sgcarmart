@@ -190,7 +190,7 @@ def get_user_input():
     
     # Initialize columns for each brand with zeros
     for col in brand_col:
-        df_skeleton.loc[0, brand] = 0
+        df_skeleton.loc[0, col] = 0
     
     # Set indicator variables based on 'brand' column
     for brand in brand_list:
@@ -202,7 +202,7 @@ def get_user_input():
 
 df_skeleton = get_user_input()
 
-df_skeleton.drop(columns=['Opel'], inplace=True)
+#df_skeleton.drop(columns=['Opel'], inplace=True)
 st.write("Shape of df_skeleton:", df_skeleton.columns)
 st.write("Shape of df_skeleton:", df_skeleton.values)
 
