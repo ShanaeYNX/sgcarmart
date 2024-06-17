@@ -206,7 +206,6 @@ df_skeleton.drop(columns=['Opel'], inplace=True)
 
 # when 'Predict' is clicked, make the prediction and store it
 if st.sidebar.button("Predict"):
-    st.write("Shape of df_skeleton:", df_skeleton.shape)
     
     # Predict the result
     prediction = model.predict(df_skeleton.values)[0]
