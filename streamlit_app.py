@@ -201,15 +201,16 @@ def get_user_input():
 
 df_skeleton = get_user_input()
 
-#df_skeleton.drop(columns=['Opel'], inplace=True)
 st.write("Shape of df_skeleton:", df_skeleton.columns)
 st.write("Shape of df_skeleton:", df_skeleton.values)
+
+input = [df_skeleton.values)]
 
 # when 'Predict' is clicked, make the prediction and store it
 if st.sidebar.button("Predict"):
     
     # Predict the result
-    prediction = model.predict(df_skeleton.values)[0]
+    prediction = model.predict(input)[0]
     
     # Check if the prediction is not infinity or too large
     if prediction == np.inf or prediction == -np.inf or np.isnan(prediction):
