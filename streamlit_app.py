@@ -8,7 +8,7 @@ import xgboost as xgb
 
 #Load the model
 model = xgb.XGBRegressor()
-model.load_model('xg_final.model')
+model.load_model('final_model.model')
 
 st.write("""
 # Predicting Used Car Prices
