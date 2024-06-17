@@ -188,15 +188,14 @@ def get_user_input():
     for brand in brand_list:
         brand_col[brand] = 'BRAND_'+brand
     
-    # Initialize columns for each brand with zeros
-    for col in brand_col:
-        df_skeleton.loc[0, col] = 0
-    
     # Set indicator variables based on 'brand' column
     for brand in brand_list:
         if make == brand:
             temp = brand_col[brand]
             df_skeleton.loc[0, temp] = 1
+        else:
+            temp = brand_col[brand]
+            df_skeleton.loc[0, temp] = 0
 
     return df_skeleton
 
