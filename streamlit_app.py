@@ -193,7 +193,7 @@ def get_user_input():
         df_skeleton.loc[0, brand] = 0
     
     # Set indicator variables based on 'brand' column
-    for brand in brands_list:
+    for brand in brand_list:
         if make == brand:
             temp = brand_col[brand]
             df_skeleton.loc[0, temp] = 1
