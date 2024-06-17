@@ -204,6 +204,8 @@ df_skeleton = get_user_input()
 
 df_skeleton.drop(columns=['Opel'], inplace=True)
 
+st.write("Shape of df_skeleton:", df_skeleton.values)
+
 # when 'Predict' is clicked, make the prediction and store it
 if st.sidebar.button("Predict"):
     
