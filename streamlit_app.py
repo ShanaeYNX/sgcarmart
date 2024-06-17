@@ -12,11 +12,7 @@ model.load_model('final_model.model')
 
 st.write("""
 # Predicting Used Car Prices
-This app predicts the ** used car prices ** for:
-- PARF cars, < 10yo only
-- excludes OPC cars
-- excludes imported used cars 
-\nand its **depreciation** using features input via the **side panel** 
+This app predicts the ** recommended car listing price ** using features input via the **side panel** 
 """)
 # Load the dataframe skeleton for prediction
 df_skeleton = pd.read_csv('df_skeleton.csv', index_col = 0)
