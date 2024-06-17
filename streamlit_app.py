@@ -34,7 +34,7 @@ def get_user_input():
     return type : pandas dataframe
 
     """
-    make = st.sidebar.selectbox("Select Make", options = brand_list)
+    make = st.sidebar.selectbox("Car Brand", options = brand_list)
     transmission_type = st.sidebar.selectbox("Transmission Type", options = ['Auto','Manual'])
     vehical_type = st.sidebar.selectbox("Type of Vehicle", options = ['Hatchback', 'Sports Car', 'Mid-Sized Sedan', 'SUV', 'Luxury Sedan', 'MPV', 'Stationwagon'])
     no_of_owners = st.sidebar.selectbox('Number of Owners', options = ['1', '2', '3', '4', '5', '6', 'More than 6'])
