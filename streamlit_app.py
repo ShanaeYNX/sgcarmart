@@ -203,7 +203,7 @@ if st.sidebar.button("Predict"):
     result = model.predict(df_skeleton.values)[0]
     
     # Format result to 2 decimal places
-    formatted_result = '{:.2f}'.format(result)
+    formatted_result = '${:,.2f}'.format(result)
     
     # Display success message with formatted result
     st.success(f'Recommended pricing of vehicle is: ${formatted_result}')
