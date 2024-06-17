@@ -1,151 +1,211 @@
+#import libraries
+import numpy as np
 import streamlit as st
+from datetime import date
+import pickle
 import pandas as pd
-import math
-from pathlib import Path
+import xgboost as xgb
 
-# Set the title and favicon that appear in the Browser's tab bar.
-st.set_page_config(
-    page_title='GDP Dashboard',
-    page_icon=':earth_americas:', # This is an emoji shortcode. Could be a URL too.
-)
+#Load the model
+model = xgb.XGBRegressor()
+model.load_model('xg_final.model')
 
-# -----------------------------------------------------------------------------
-# Declare some useful functions.
+st.write("""
+# Predicting Used Car Prices
+This app predicts the ** used car prices ** for:
+- PARF cars, < 10yo only
+- excludes OPC cars
+- excludes imported used cars 
+\nand its **depreciation** using features input via the **side panel** 
+""")
+# Load the dataframe skeleton for prediction
+df_skeleton = pd.read_csv('df_skeleton.csv', index_col = 0)
+# Load the brand_list
+brand_list = pickle.load(open('brand_list.pkl', 'rb'))
 
-@st.cache_data
-def get_gdp_data():
-    """Grab GDP data from a CSV file.
+def addYears(d, years):
+    try:
+    # Return same day of the current year
+        return d.replace(year=d.year + years)
+    except ValueError:
+    # If not same day, it will return other, i.e.  February 29 to March 1 etc.
+        return d + (date(d.year + years, 1, 1) - date(d.year, 1, 1))
 
-    This uses caching to avoid having to read the file every time. If we were
-    reading from an HTTP endpoint instead of a file, it's a good idea to set
-    a maximum age to the cache with the TTL argument: @st.cache_data(ttl='1d')
+
+def get_user_input():
     """
+    this function is used to get user input using sidebar slider and selectbox
+    return type : pandas dataframe
 
-    # Instead of a CSV on disk, you could read from an HTTP endpoint here too.
-    DATA_FILENAME = Path(__file__).parent/'data/gdp_data.csv'
-    raw_gdp_df = pd.read_csv(DATA_FILENAME)
+    """
+    make = st.sidebar.selectbox("Select Make", options = brand_list)
+    transmission_type = st.sidebar.selectbox("Transmission Type", options = ['Auto','Manual'])
+    vehical_type = st.sidebar.selectbox("Type of Vehicle", options = ['Hatchback', 'Sports Car', 'Mid-Sized Sedan', 'SUV', 'Luxury Sedan', 'MPV', 'Stationwagon'])
+    no_of_owners = st.sidebar.selectbox('Number of Owners', options = ['1', '2', '3', '4', '5', '6', 'More than 6'])
+    mileage = st.sidebar.number_input('Mileage(km)', min_value= 10)
+    reg_date = st.sidebar.date_input('Car Registration Date', max_value= date.today())
+    coe_qp = st.sidebar.number_input('COE QP ($)', min_value= 10000)
+    arf = st.sidebar.number_input('ARF ($)', min_value = 100)
+    depreciation = st.sidebar.number_input('Depreciation ($)', min_value = 100)
+    road_tax = st.sidebar.number_input('Road Tax ($ per annum)', min_value = 100)
+    dereg_value = st.sidebar.number_input('Deregistration Value ($)', min_value = 100)
+    power = st.sidebar.number_input('Power (Kw)', min_value = 10)
+    
+    coe_days_left = float((addYears(reg_date, 10) - date.today()).days -1)
+    
+    df_skeleton.loc[0, 'MILEAGE'] = mileage
+    df_skeleton.loc[0, 'COE'] = coe_qp
+    df_skeleton.loc[0, 'CURB_WEIGHT'] = arf
+    df_skeleton.loc[0, 'COE_NUMBER_OF_DAYS_LEFT'] = coe_days_left
+    df_skeleton.loc[0, 'AGE_OF_COE'] = float(date.today()-reg_date().days -1)
+    df_skeleton.loc[0, 'log_DEPRECIATION'] = np.log1p(depreciation)
+    df_skeleton.loc[0, 'log_ROAD_TAX'] = np.log1p(road_tax)
+    df_skeleton.loc[0, 'log_DEREG_VALUE'] = np.log1p(dereg_value)
+    df_skeleton.loc[0, 'log_ARF'] = np.log1p(arf)
+    df_skeleton.loc[0, 'log_POWER'] = np.log1p(power)
+    if transmission_type == 'Auto':
+        df_skeleton.loc[0, 'TRANSMISSION_Auto'] = 1
+        df_skeleton.loc[0, 'TRANSMISSION_Manual'] = 0
+    else:
+        df_skeleton.loc[0, 'TRANSMISSION_Auto'] = 0
+        df_skeleton.loc[0, 'TRANSMISSION_Manual'] = 1
+    if no_of_owners == 1:
+        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 1
+        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
+    elif no_of_owners == 2:
+        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 1
+        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
+    elif no_of_owners == 3:
+        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 1
+        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
+    elif no_of_owners == 4:
+        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 1
+        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
+    elif no_of_owners == 5:
+        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 1
+        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
+    elif no_of_owners == 6:
+        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 1
+        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
+    else:
+        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 1
 
-    MIN_YEAR = 1960
-    MAX_YEAR = 2022
+    if vehical_type == 'Hatchback':
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 1
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_SUV'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 0
+    elif vehical_type == 'Luxury Sedan':
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 1
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_SUV'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 0
+        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
+    elif vehical_type == 'MPV':
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 1
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_SUV'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 0
+    elif vehical_type == 'Mid-Sized Sedan':
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 1
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_SUV'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 0
+    elif vehical_type == 'SUV':
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_SUV'] = 1
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 0
+    elif vehical_type == 'Sports Car':
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_SUV'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 1
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 0
+    else:
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_SUV'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 0
+        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 1
+        
+    brand_col = {}
+    for brand in brand_list:
+        brand_col[brand] = 'BRAND_'+brand
+    
+    # Initialize columns for each brand with zeros
+    for col in brands_col:
+        df_skeleton.loc[0, brand] = 0
+    
+    # Set indicator variables based on 'brand' column
+    for brand in brands_list:
+        if make == brand:
+            temp = brand_col[brand]
+            df_skeleton.loc[0, temp] = 1
 
-    # The data above has columns like:
-    # - Country Name
-    # - Country Code
-    # - [Stuff I don't care about]
-    # - GDP for 1960
-    # - GDP for 1961
-    # - GDP for 1962
-    # - ...
-    # - GDP for 2022
-    #
-    # ...but I want this instead:
-    # - Country Name
-    # - Country Code
-    # - Year
-    # - GDP
-    #
-    # So let's pivot all those year-columns into two: Year and GDP
-    gdp_df = raw_gdp_df.melt(
-        ['Country Code'],
-        [str(x) for x in range(MIN_YEAR, MAX_YEAR + 1)],
-        'Year',
-        'GDP',
-    )
+    return df_skeleton
 
-    # Convert years from string to integers
-    gdp_df['Year'] = pd.to_numeric(gdp_df['Year'])
+df_skeleton = get_user_input()
 
-    return gdp_df
-
-gdp_df = get_gdp_data()
-
-# -----------------------------------------------------------------------------
-# Draw the actual page
-
-# Set the title that appears at the top of the page.
-'''
-# :earth_americas: GDP Dashboard
-
-Browse GDP data from the [World Bank Open Data](https://data.worldbank.org/) website. As you'll
-notice, the data only goes to 2022 right now, and datapoints for certain years are often missing.
-But it's otherwise a great (and did I mention _free_?) source of data.
-'''
-
-# Add some spacing
-''
-''
-
-min_value = gdp_df['Year'].min()
-max_value = gdp_df['Year'].max()
-
-from_year, to_year = st.slider(
-    'Which years are you interested in?',
-    min_value=min_value,
-    max_value=max_value,
-    value=[min_value, max_value])
-
-countries = gdp_df['Country Code'].unique()
-
-if not len(countries):
-    st.warning("Select at least one country")
-
-selected_countries = st.multiselect(
-    'Which countries would you like to view?',
-    countries,
-    ['DEU', 'FRA', 'GBR', 'BRA', 'MEX', 'JPN'])
-
-''
-''
-''
-
-# Filter the data
-filtered_gdp_df = gdp_df[
-    (gdp_df['Country Code'].isin(selected_countries))
-    & (gdp_df['Year'] <= to_year)
-    & (from_year <= gdp_df['Year'])
-]
-
-st.header('GDP over time', divider='gray')
-
-''
-
-st.line_chart(
-    filtered_gdp_df,
-    x='Year',
-    y='GDP',
-    color='Country Code',
-)
-
-''
-''
+# when 'Predict' is clicked, make the prediction and store it
+if st.sidebar.button("Predict"):
+ result = int(np.exp(model.predict(df_skeleton.values)[0]))
+ st.success('Recommended pricing of vehicle is : ${:,}'.format(result))
 
 
-first_year = gdp_df[gdp_df['Year'] == from_year]
-last_year = gdp_df[gdp_df['Year'] == to_year]
 
-st.header(f'GDP in {to_year}', divider='gray')
-
-''
-
-cols = st.columns(4)
-
-for i, country in enumerate(selected_countries):
-    col = cols[i % len(cols)]
-
-    with col:
-        first_gdp = first_year[gdp_df['Country Code'] == country]['GDP'].iat[0] / 1000000000
-        last_gdp = last_year[gdp_df['Country Code'] == country]['GDP'].iat[0] / 1000000000
-
-        if math.isnan(first_gdp):
-            growth = 'n/a'
-            delta_color = 'off'
-        else:
-            growth = f'{last_gdp / first_gdp:,.2f}x'
-            delta_color = 'normal'
-
-        st.metric(
-            label=f'{country} GDP',
-            value=f'{last_gdp:,.0f}B',
-            delta=growth,
-            delta_color=delta_color
-        )
