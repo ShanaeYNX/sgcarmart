@@ -208,7 +208,12 @@ st.write("Shape of df_skeleton:", df_skeleton.values)
 if st.sidebar.button("Predict"):
     # Predict the result
     result = model.predict(df_skeleton.values)[0]
-    st.success('Recommended pricing of vehicle is : ${:,}'.format(result))
+    
+    # Format result to 2 decimal places
+    formatted_result = '{:.2f}'.format(result)
+    
+    # Display success message with formatted result
+    st.success(f'Recommended pricing of vehicle is: ${formatted_result}')
 
 
 
