@@ -210,7 +210,7 @@ input = [df_skeleton.values]
 if st.sidebar.button("Predict"):
     
     # Predict the result
-    prediction = model.predict(input)[0]
+    prediction = model.predict(df_skeleton.values)[0]
     
     # Check if the prediction is not infinity or too large
     if prediction == np.inf or prediction == -np.inf or np.isnan(prediction):
