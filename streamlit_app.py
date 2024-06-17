@@ -57,7 +57,7 @@ def get_user_input():
     df_skeleton.loc[0, 'COE'] = coe_qp
     df_skeleton.loc[0, 'CURB_WEIGHT'] = arf
     df_skeleton.loc[0, 'COE_NUMBER_OF_DAYS_LEFT'] = coe_days_left
-    df_skeleton.loc[0, 'AGE_OF_COE'] = float(date.today()-reg_date().days -1)
+    df_skeleton.loc[0, 'AGE_OF_COE'] = float(date.today()-coe_days_left)
     df_skeleton.loc[0, 'log_DEPRECIATION'] = np.log1p(depreciation)
     df_skeleton.loc[0, 'log_ROAD_TAX'] = np.log1p(road_tax)
     df_skeleton.loc[0, 'log_DEREG_VALUE'] = np.log1p(dereg_value)
