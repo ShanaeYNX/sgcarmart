@@ -189,7 +189,7 @@ def get_user_input():
         brand_col[brand] = 'BRAND_'+brand
     
     # Initialize columns for each brand with zeros
-    for col in brands_col:
+    for col in brand_col:
         df_skeleton.loc[0, brand] = 0
     
     # Set indicator variables based on 'brand' column
