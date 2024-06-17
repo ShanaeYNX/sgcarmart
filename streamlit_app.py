@@ -201,9 +201,10 @@ def get_user_input():
     return df_skeleton
 
 df_skeleton = get_user_input()
-print("Shape of df_skeleton:", df_skeleton.shape)
+
 # when 'Predict' is clicked, make the prediction and store it
 if st.sidebar.button("Predict"):
+ st.success("Shape of df_skeleton:", df_skeleton.shape)
  result = int(np.exp(model.predict(df_skeleton.values)[0]))
  st.success('Recommended pricing of vehicle is : ${:,}'.format(result))
 
