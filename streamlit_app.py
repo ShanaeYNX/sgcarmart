@@ -206,8 +206,17 @@ df_skeleton.drop(columns=['Opel'], inplace=True)
 
 # when 'Predict' is clicked, make the prediction and store it
 if st.sidebar.button("Predict"):
- result = int(np.exp(model.predict(df_skeleton.values)[0]))
- st.success('Recommended pricing of vehicle is : ${:,}'.format(result))
+    st.write("Shape of df_skeleton:", df_skeleton.shape)
+    
+    # Predict the result
+    prediction = model.predict(df_skeleton.values)[0]
+    
+    # Check if the prediction is not infinity or too large
+    if prediction == np.inf or prediction == -np.inf or np.isnan(prediction):
+        st.error("Error: Unable to make prediction. Please check your input.")
+    else:
+        result = int(np.exp(prediction))
+        st.success('Recommended pricing of vehicle is : ${:,}'.format(result))
 
 
 
