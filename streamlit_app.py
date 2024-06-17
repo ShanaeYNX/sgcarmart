@@ -206,7 +206,6 @@ df_skeleton.drop(columns=['Opel'], inplace=True)
 
 # when 'Predict' is clicked, make the prediction and store it
 if st.sidebar.button("Predict"):
- st.success("Shape of df_skeleton:", df_skeleton.shape)
  result = int(np.exp(model.predict(df_skeleton.values)[0]))
  st.success('Recommended pricing of vehicle is : ${:,}'.format(result))
 
