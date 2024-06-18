@@ -22,6 +22,8 @@ brand_list = pickle.load(open('brand_list.pkl', 'rb'))
 columns_to_scale = pickle.load(open('columns_to_scale.pkl', 'rb'))
 # load scaler
 scaler = pickle.load(open('scaler.pkl', 'rb'))
+# load brand mean price dictionary
+brand_mean_price_dict = pickle.load(open('brand_mean_price_dict.pkl', 'rb'))
 
 def addYears(d, years):
     try:
@@ -39,16 +41,13 @@ def get_user_input():
 
     """
     make = st.sidebar.selectbox("Car Brand", options = brand_list)
-    transmission_type = st.sidebar.selectbox("Transmission Type", options = ['Auto','Manual'])
     vehical_type = st.sidebar.selectbox("Type of Vehicle", options = ['Hatchback', 'Sports Car', 'Mid-Sized Sedan', 'SUV', 'Luxury Sedan', 'MPV', 'Stationwagon'])
     no_of_owners = st.sidebar.selectbox('Number of Owners', options = ['1', '2', '3', '4', '5', '6', 'More than 6'])
     mileage = st.sidebar.number_input('Mileage(km)', min_value= 10)
     reg_date = st.sidebar.date_input('Car Registration Date', max_value= date.today())
     coe_qp = st.sidebar.number_input('COE ($)', min_value= 10000)
     arf = st.sidebar.number_input('ARF ($)', min_value = 100)
-    depreciation = st.sidebar.number_input('Depreciation ($ as of Today)', min_value = 100)
     road_tax = st.sidebar.number_input('Road Tax ($ per annum)', min_value = 100)
-    dereg_value = st.sidebar.number_input('Deregistration Value ($)', min_value = 100)
     power = st.sidebar.number_input('Power (Kw)', min_value = 10)
     curb_weight = st.sidebar.number_input('Curb Weight (KG)', min_value = 100)
     
@@ -59,76 +58,16 @@ def get_user_input():
     df_skeleton.loc[0, 'CURB_WEIGHT'] = curb_weight
     df_skeleton.loc[0, 'COE_NUMBER_OF_DAYS_LEFT'] = coe_days_left
     df_skeleton.loc[0, 'AGE_OF_COE'] = float((date.today() - reg_date).days -1)
-    df_skeleton.loc[0, 'log_DEPRECIATION'] = np.log1p(depreciation)
     df_skeleton.loc[0, 'log_ROAD_TAX'] = np.log1p(road_tax)
-    df_skeleton.loc[0, 'log_DEREG_VALUE'] = np.log1p(dereg_value)
     df_skeleton.loc[0, 'log_ARF'] = np.log1p(arf)
     df_skeleton.loc[0, 'log_POWER'] = np.log1p(power)
-    if transmission_type == 'Auto':
-        df_skeleton.loc[0, 'TRANSMISSION_Auto'] = 1
-        df_skeleton.loc[0, 'TRANSMISSION_Manual'] = 0
+    
+    if no_of_owners == 'More than 6':
+        df_skeleton.loc[0, 'NO_OF_OWNERS'] = 7
     else:
-        df_skeleton.loc[0, 'TRANSMISSION_Auto'] = 0
-        df_skeleton.loc[0, 'TRANSMISSION_Manual'] = 1
-    if no_of_owners == 1:
-        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 1
-        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
-    elif no_of_owners == 2:
-        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 1
-        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
-    elif no_of_owners == 3:
-        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 1
-        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
-    elif no_of_owners == 4:
-        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 1
-        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
-    elif no_of_owners == 5:
-        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 1
-        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
-    elif no_of_owners == 6:
-        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 1
-        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
-    else:
-        df_skeleton.loc[0, 'NO_OF_OWNERS_1'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_2'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_3'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_4'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_5'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_6'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 1
-
+        df_skeleton.loc[0, 'NO_OF_OWNERS'] = int(no_of_owners)
+        
     if vehical_type == 'Hatchback':
-        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 1
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 0
@@ -136,7 +75,6 @@ def get_user_input():
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 0
     elif vehical_type == 'Luxury Sedan':
-        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 1
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 0
@@ -145,7 +83,6 @@ def get_user_input():
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 0
         df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
     elif vehical_type == 'MPV':
-        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 1
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 0
@@ -153,7 +90,6 @@ def get_user_input():
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 0
     elif vehical_type == 'Mid-Sized Sedan':
-        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 1
@@ -161,7 +97,6 @@ def get_user_input():
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 0
     elif vehical_type == 'SUV':
-        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 0
@@ -169,7 +104,6 @@ def get_user_input():
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 0
     elif vehical_type == 'Sports Car':
-        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 0
@@ -177,26 +111,14 @@ def get_user_input():
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 1
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 0
     else:
-        df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Hatchback'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Mid-Sized Sedan'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_SUV'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 1
-        
-    brand_col = {}
-    for brand in brand_list:
-        brand_col[brand] = 'BRAND_'+brand
-    
-    # Set indicator variables based on 'brand' column
-    for brand in brand_list:
-        if make == brand:
-            temp = brand_col[brand]
-            df_skeleton.loc[0, temp] = 1
-        else:
-            temp = brand_col[brand]
-            df_skeleton.loc[0, temp] = 0
+
+    df_skeleton.loc[0, 'log_BRAND_MEAN_PRICE'] = brand_mean_price_dict[make]
 
     return df_skeleton
 
@@ -215,6 +137,10 @@ if st.sidebar.button("Predict"):
     
     # Display success message with formatted result
     st.success(f'Recommended pricing of vehicle is: ${formatted_result}')
+
+     parf = 0.5 * arf
+     depreciation = int((result - parf) / (coe_days_left / 365))
+     st.success('Estimated depreciation is : ${:,.2f} /year'.format(depreciation))
 
 
 
