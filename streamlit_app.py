@@ -43,7 +43,7 @@ def get_user_input():
     make = st.sidebar.selectbox("Car Brand", options = brand_list)
     vehical_type = st.sidebar.selectbox("Type of Vehicle", options = ['Hatchback', 'Sports Car', 'Mid-Sized Sedan', 'SUV', 'Luxury Sedan', 'MPV', 'Stationwagon'])
     no_of_owners = st.sidebar.selectbox('Number of Owners', options = ['1', '2', '3', '4', '5', '6', 'More than 6'])
-    mileage = st.sidebar.number_input('Mileage(km)', min_value= 10)
+    mileage = st.sidebar.number_input('Mileage (km)', min_value= 10)
     reg_date = st.sidebar.date_input('Car Registration Date', max_value= date.today())
     coe_qp = st.sidebar.number_input('COE ($)', min_value= 10000)
     arf = st.sidebar.number_input('ARF ($)', min_value = 100)
