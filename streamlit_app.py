@@ -20,8 +20,8 @@ df_skeleton = pd.read_csv('df_skeleton.csv', index_col = 0)
 brand_list = pickle.load(open('brand_list.pkl', 'rb'))
 # Load the columns to scale
 columns_to_scale = pickle.load(open('columns_to_scale.pkl', 'rb'))
-# load scalar
-scalar = pickle.load(open('scalar.pkl', 'rb'))
+# load scaler
+scaler = pickle.load(open('scaler.pkl', 'rb'))
 
 def addYears(d, years):
     try:
