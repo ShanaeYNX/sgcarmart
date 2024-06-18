@@ -120,7 +120,7 @@ def get_user_input():
 
     df_skeleton.loc[0, 'log_BRAND_MEAN_PRICE'] = brand_mean_price_dict[make]
 
-    return df_skeleton, arf
+    return df_skeleton, arf, coe_days_left
 
 df_skeleton, arf = get_user_input()
 
