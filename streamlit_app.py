@@ -118,7 +118,7 @@ def get_user_input():
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 1
 
-    df_skeleton.loc[0, 'log_BRAND_MEAN_PRICE'] = brand_mean_price_dict[make]
+    df_skeleton.loc[0, 'log_BRAND_MEAN_PRICE'] = np.log1p(brand_mean_price_dict[make])
 
     return df_skeleton, arf, coe_days_left
 
