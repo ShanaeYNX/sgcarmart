@@ -120,9 +120,9 @@ def get_user_input():
 
     df_skeleton.loc[0, 'log_BRAND_MEAN_PRICE'] = brand_mean_price_dict[make]
 
-    return df_skeleton
+    return df_skeleton, arf
 
-df_skeleton = get_user_input()
+df_skeleton, arf = get_user_input()
 
 # Scale the Data
 df_skeleton[columns_to_scale] = scaler.transform(df_skeleton[columns_to_scale])
