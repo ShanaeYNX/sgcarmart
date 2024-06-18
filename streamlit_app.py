@@ -138,9 +138,9 @@ if st.sidebar.button("Predict"):
     # Display success message with formatted result
     st.success(f'Recommended pricing of vehicle is: ${formatted_result}')
 
-     parf = 0.5 * arf
-     depreciation = int((result - parf) / (coe_days_left / 365))
-     st.success('Estimated depreciation is : ${:,.2f} /year'.format(depreciation))
+    parf = 0.5 * arf
+    depreciation = int((result - parf) / (coe_days_left / 365))
+    st.success('Estimated depreciation is : ${:,.2f} /year'.format(depreciation))
 
 
 
