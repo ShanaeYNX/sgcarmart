@@ -18,6 +18,10 @@ This app predicts the ** recommended car listing price ** using features input v
 df_skeleton = pd.read_csv('df_skeleton.csv', index_col = 0)
 # Load the brand_list
 brand_list = pickle.load(open('brand_list.pkl', 'rb'))
+# Load the columns to scale
+columns_to_scale = pickle.load(open('columns_to_scale.pkl', 'rb'))
+# load scalar
+scalar = pickle.load(open('scalar.pkl', 'rb'))
 
 def addYears(d, years):
     try:
@@ -196,6 +200,9 @@ def get_user_input():
     return df_skeleton
 
 df_skeleton = get_user_input()
+
+# Scale the Data
+df_skeleton[columns_to_scale] = scaler.transform(df_skeleton[columns_to_scale])
 
 # when 'Predict' is clicked, make the prediction and store it
 if st.sidebar.button("Predict"):
