@@ -140,7 +140,7 @@ if st.sidebar.button("Predict"):
 
     parf = 0.5 * arf
     depreciation = int((result - parf) / (coe_days_left / 365))
-    st.metric('Estimated depreciation is : ${:,.2f} /year'.format(depreciation))
+    st.write('Estimated depreciation is : ${:,.2f} /year'.format(depreciation))
 
 
 
