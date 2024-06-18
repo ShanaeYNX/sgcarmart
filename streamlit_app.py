@@ -81,7 +81,6 @@ def get_user_input():
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_SUV'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Sports Car'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Stationwagon'] = 0
-        df_skeleton.loc[0, 'NO_OF_OWNERS_More than 6'] = 0
     elif vehical_type == 'MPV':
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_Luxury Sedan'] = 0
         df_skeleton.loc[0, 'TYPE_OF_VEHICLE_MPV'] = 1
