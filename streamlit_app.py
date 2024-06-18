@@ -50,12 +50,13 @@ def get_user_input():
     road_tax = st.sidebar.number_input('Road Tax ($ per annum)', min_value = 100)
     dereg_value = st.sidebar.number_input('Deregistration Value ($)', min_value = 100)
     power = st.sidebar.number_input('Power (Kw)', min_value = 10)
+    curb_weight = st.sidebar.number_input('Curb Weight (KG)', min_value = 100)
     
     coe_days_left = float((addYears(reg_date, 10) - date.today()).days -1)
     
     df_skeleton.loc[0, 'MILEAGE'] = mileage
     df_skeleton.loc[0, 'COE'] = coe_qp
-    df_skeleton.loc[0, 'CURB_WEIGHT'] = arf
+    df_skeleton.loc[0, 'CURB_WEIGHT'] = curb_weight
     df_skeleton.loc[0, 'COE_NUMBER_OF_DAYS_LEFT'] = coe_days_left
     df_skeleton.loc[0, 'AGE_OF_COE'] = float((date.today() - reg_date).days -1)
     df_skeleton.loc[0, 'log_DEPRECIATION'] = np.log1p(depreciation)
