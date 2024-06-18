@@ -122,7 +122,7 @@ def get_user_input():
 
     return df_skeleton, arf, coe_days_left
 
-df_skeleton, arf = get_user_input()
+df_skeleton, arf, coe_days_left = get_user_input()
 
 # Scale the Data
 df_skeleton[columns_to_scale] = scaler.transform(df_skeleton[columns_to_scale])
