@@ -132,14 +132,14 @@ if st.sidebar.button("Predict"):
     result = model.predict(df_skeleton.values)[0]
     
     # Format result to 2 decimal places
-    formatted_result = '${:,}'.format(result)
+    formatted_result = '${:,.2f}'.format(result)
     
     # Display success message with formatted result
     st.success(f'Recommended pricing of vehicle is: ${formatted_result}')
 
     parf = 0.5 * arf
     depreciation = int((result - parf) / (coe_days_left / 365))
-    st.write('Estimated depreciation is : ${:,} /year'.format(depreciation))
+    st.write('Estimated depreciation is : ${:,.2f} /year'.format(depreciation))
 
 
 
