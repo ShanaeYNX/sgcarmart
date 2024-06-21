@@ -57,9 +57,9 @@ def get_user_input():
     df_skeleton.loc[0, 'CURB_WEIGHT'] = curb_weight
     df_skeleton.loc[0, 'COE_NUMBER_OF_DAYS_LEFT'] = int((reg_date - date.today()).days)
     if coe_type == '5 years':
-        df_skeleton.loc[0, 'AGE_OF_COE'] = float((date.today()).days - reduceYears(reg_date, 5))
+        df_skeleton.loc[0, 'AGE_OF_COE'] = float(date.today().days - reduceYears(reg_date, 5))
     else:
-        df_skeleton.loc[0, 'AGE_OF_COE'] = float((date.today()).days - reduceYears(reg_date, 10))
+        df_skeleton.loc[0, 'AGE_OF_COE'] = float(date.today().days - reduceYears(reg_date, 10))
     df_skeleton.loc[0, 'log_ROAD_TAX'] = np.log1p(road_tax)
     df_skeleton.loc[0, 'log_ARF'] = np.log1p(arf)
     df_skeleton.loc[0, 'log_POWER'] = np.log1p(power)
