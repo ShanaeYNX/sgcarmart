@@ -25,13 +25,13 @@ scaler = pickle.load(open('scaler.pkl', 'rb'))
 # load brand mean price dictionary
 brand_mean_price_dict = pickle.load(open('brand_mean_price_dict.pkl', 'rb'))
 
-def addYears(d, years):
+def reduceYears(d, years):
     try:
     # Return same day of the current year
-        return d.replace(year=d.year + years)
+        return d.replace(year=d.year - years)
     except ValueError:
     # If not same day, it will return other, i.e.  February 29 to March 1 etc.
-        return d + (date(d.year + years, 1, 1) - date(d.year, 1, 1))
+        return d + (date(d.year - years, 1, 1) - date(d.year, 1, 1))
 
 
 def get_user_input():
@@ -44,7 +44,8 @@ def get_user_input():
     vehical_type = st.sidebar.selectbox("Type of Vehicle", options = ['Hatchback', 'Sports Car', 'Mid-Sized Sedan', 'SUV', 'Luxury Sedan', 'MPV', 'Stationwagon'])
     no_of_owners = st.sidebar.selectbox('Number of Owners', options = ['1', '2', '3', '4', '5', '6', 'More than 6'])
     mileage = st.sidebar.number_input('Mileage (km)', min_value= 10)
-    reg_date = st.sidebar.date_input('Car Registration Date', max_value= date.today())
+    coe_type = st.sidebar.selectbox('COE Type', options = ['5 years', '10 years'])
+    reg_date = st.sidebar.date_input('COE Expiry Date', min_value= date.today())
     coe_qp = st.sidebar.number_input('COE ($)', min_value= 10000)
     arf = st.sidebar.number_input('ARF ($)', min_value = 100)
     road_tax = st.sidebar.number_input('Road Tax ($ per annum)', min_value = 100)
@@ -56,8 +57,11 @@ def get_user_input():
     df_skeleton.loc[0, 'MILEAGE'] = mileage
     df_skeleton.loc[0, 'COE'] = coe_qp
     df_skeleton.loc[0, 'CURB_WEIGHT'] = curb_weight
-    df_skeleton.loc[0, 'COE_NUMBER_OF_DAYS_LEFT'] = coe_days_left
-    df_skeleton.loc[0, 'AGE_OF_COE'] = float((date.today() - reg_date).days -1)
+    df_skeleton.loc[0, 'COE_NUMBER_OF_DAYS_LEFT'] = int(reg_date - date.today()).days)
+    if coe_type == '5 years':
+        df_skeleton.loc[0, 'AGE_OF_COE'] = float((date.today()).days - reduceYears(reg_date, 5))
+    else:
+        df_skeleton.loc[0, 'AGE_OF_COE'] = float((date.today()).days - reduceYears(reg_date, 10))
     df_skeleton.loc[0, 'log_ROAD_TAX'] = np.log1p(road_tax)
     df_skeleton.loc[0, 'log_ARF'] = np.log1p(arf)
     df_skeleton.loc[0, 'log_POWER'] = np.log1p(power)
