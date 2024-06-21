@@ -52,8 +52,6 @@ def get_user_input():
     power = st.sidebar.number_input('Power (Kw)', min_value = 10)
     curb_weight = st.sidebar.number_input('Curb Weight (KG)', min_value = 100)
     
-    coe_days_left = float((addYears(reg_date, 10) - date.today()).days -1)
-    
     df_skeleton.loc[0, 'MILEAGE'] = mileage
     df_skeleton.loc[0, 'COE'] = coe_qp
     df_skeleton.loc[0, 'CURB_WEIGHT'] = curb_weight
