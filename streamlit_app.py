@@ -57,7 +57,7 @@ def get_user_input():
     df_skeleton.loc[0, 'MILEAGE'] = mileage
     df_skeleton.loc[0, 'COE'] = coe_qp
     df_skeleton.loc[0, 'CURB_WEIGHT'] = curb_weight
-    df_skeleton.loc[0, 'COE_NUMBER_OF_DAYS_LEFT'] = int(reg_date - date.today()).days)
+    df_skeleton.loc[0, 'COE_NUMBER_OF_DAYS_LEFT'] = int((reg_date - date.today()).days)
     if coe_type == '5 years':
         df_skeleton.loc[0, 'AGE_OF_COE'] = float((date.today()).days - reduceYears(reg_date, 5))
     else:
