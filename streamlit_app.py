@@ -57,9 +57,11 @@ def get_user_input():
     df_skeleton.loc[0, 'CURB_WEIGHT'] = curb_weight
     df_skeleton.loc[0, 'COE_NUMBER_OF_DAYS_LEFT'] = int((reg_date - date.today()).days)
     if coe_type == '5 years':
-        df_skeleton.loc[0, 'AGE_OF_COE'] = float((date.today() - reduceYears(reg_date, 5)).days)
+        age_of_coe = float((date.today() - reduceYears(reg_date, 5)).days)
+        df_skeleton.loc[0, 'AGE_OF_COE'] = age_of_coe
     else:
-        df_skeleton.loc[0, 'AGE_OF_COE'] = float((date.today() - reduceYears(reg_date, 10)).days)
+        age_of_coe = float((date.today() - reduceYears(reg_date, 10)).days)
+        df_skeleton.loc[0, 'AGE_OF_COE'] = age_of_coe
     df_skeleton.loc[0, 'log_ROAD_TAX'] = np.log1p(road_tax)
     df_skeleton.loc[0, 'log_ARF'] = np.log1p(arf)
     df_skeleton.loc[0, 'log_POWER'] = np.log1p(power)
@@ -121,7 +123,7 @@ def get_user_input():
 
     df_skeleton.loc[0, 'log_BRAND_MEAN_PRICE'] = np.log1p(brand_mean_price_dict[make])
 
-    return df_skeleton, arf, coe_days_left
+    return df_skeleton, arf, age_of_coe
 
 df_skeleton, arf, coe_days_left = get_user_input()
 
@@ -140,7 +142,7 @@ if st.sidebar.button("Predict"):
     st.success(f'Recommended pricing of vehicle is: ${formatted_result}')
 
     parf = 0.5 * arf
-    depreciation = int((result - parf) / (coe_days_left / 365))
+    depreciation = int((result - parf) / (age_of_coe / 365))
     st.write('Estimated depreciation is : ${:,.2f} /year'.format(depreciation))
 
 
