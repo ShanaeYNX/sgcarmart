@@ -17,7 +17,16 @@ st.write("""
 This app predicts the **recommended car listing price** and its **yearly depreciation** using features input via the **side panel** 
 """)
 #Load the model
-model = pickle.loads(r.content)
+try:
+    # Load the model directly from the downloaded content
+    model = pickle.loads(r.content)
+except pickle.UnpicklingError as e:
+    st.error(f"Error loading model: {e}")
+    model = None  # or handle the error as appropriate
+
+if model is None:
+    st.error("Failed to load model. Check the downloaded content or try again later.")
+    st.stop()  # Stop further execution
 # Load the dataframe skeleton for prediction
 df_skeleton = pd.read_csv('df_skeleton.csv', index_col = 0)
 # Load the brand_list
