@@ -5,28 +5,15 @@ from datetime import date
 import pickle
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
-import requests
-
-download_url = "https://github.com/ShanaeYNX/sgcarmart/releases/tag/v1.0.0/final_model.pkl"
-
-# Download the file
-r = requests.get(download_url)
+import gzip
 
 st.write("""
 # Predicting Used Car Prices
 This app predicts the **recommended car listing price** and its **yearly depreciation** using features input via the **side panel** 
 """)
 #Load the model
-try:
-    # Load the model directly from the downloaded content
-    model = pickle.loads(r.content)
-except pickle.UnpicklingError as e:
-    st.error(f"Error loading model: {e}")
-    model = None  # or handle the error as appropriate
-
-if model is None:
-    st.error("Failed to load model. Check the downloaded content or try again later.")
-    st.stop()  # Stop further execution
+with gzip.open('final_model.pkl.gz', 'rb') as f:
+    model = pickle.load(f)
 # Load the dataframe skeleton for prediction
 df_skeleton = pd.read_csv('df_skeleton.csv', index_col = 0)
 # Load the brand_list
