@@ -6,6 +6,7 @@ import pickle
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 import gzip
+import os
 
 file_path = 'final_model.pkl.gz'
 
