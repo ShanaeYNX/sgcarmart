@@ -22,8 +22,8 @@ st.success(sklearn.__version__)
 #train the model
 model = RandomForestRegressor(bootstrap=False, max_depth=15, max_features=0.5, min_samples_leaf=1, min_samples_split=2, n_estimators=200, random_state=2024)
 
-X_train = pd.read_csv('sg_used_cars_X_train')
-y_train = pd.read_csv('sg_used_cars_y_train')
+X_train = pd.read_csv('sg_used_cars_X_train.csv')
+y_train = pd.read_csv('sg_used_cars_y_train.csv')
 model.fit(X_train, y_train)
 
 
