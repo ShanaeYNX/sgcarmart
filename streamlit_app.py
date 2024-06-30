@@ -12,8 +12,14 @@ st.write("""
 This app predicts the **recommended car listing price** and its **yearly depreciation** using features input via the **side panel** 
 """)
 #Load the model
-with gzip.open('final_model.pkl.gz', 'rb') as f:
-    model = pickle.load(f)
+try:
+    with gzip.open(file_path, 'rb') as f:
+        model = pickle.load(f)
+    st.success("Model loaded successfully!")
+except FileNotFoundError:
+    st.error(f"File '{file_path}' not found.")
+except Exception as e:
+    st.error(f"Error loading model: {e}")
 # Load the dataframe skeleton for prediction
 df_skeleton = pd.read_csv('df_skeleton.csv', index_col = 0)
 # Load the brand_list
