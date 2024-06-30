@@ -7,6 +7,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 import gzip
 import os
+import sklearn
 
 file_path = 'final_model.pkl.gz'
 
