@@ -12,16 +12,12 @@ download_url = "https://github.com/ShanaeYNX/sgcarmart/releases/tag/v1.0.0/final
 # Download the file
 r = requests.get(download_url)
 
-# Save it locally
-with open('final_model.pkl', 'wb') as f:
-    f.write(r.content)
-
 st.write("""
 # Predicting Used Car Prices
 This app predicts the **recommended car listing price** and its **yearly depreciation** using features input via the **side panel** 
 """)
 #Load the model
-model = pickle.load(open('final_model.pkl', 'rb'))
+model = pickle.loads(r.content)
 # Load the dataframe skeleton for prediction
 df_skeleton = pd.read_csv('df_skeleton.csv', index_col = 0)
 # Load the brand_list
