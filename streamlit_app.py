@@ -5,7 +5,16 @@ from datetime import date
 import pickle
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
+import requests
 
+download_url = "https://github.com/username/repository/releases/download/vX.Y.Z/final_model.pkl"
+
+# Download the file
+r = requests.get(download_url)
+
+# Save it locally
+with open('final_model.pkl', 'wb') as f:
+    f.write(r.content)
 
 st.write("""
 # Predicting Used Car Prices
