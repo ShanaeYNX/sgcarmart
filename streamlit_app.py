@@ -8,6 +8,7 @@ from sklearn.ensemble import RandomForestRegressor
 import gzip
 import os
 import sklearn
+import joblib
 
 # file_path = 'final_model.pkl.gz'
 
