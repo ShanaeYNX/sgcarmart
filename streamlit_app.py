@@ -19,10 +19,10 @@ st.write("""
 # Predicting Used Car Prices
 This app predicts the **recommended car listing price** and its **yearly depreciation** using features input via the **side panel** 
 """)
-#Load the model
+# Load the model
 with gzip.open(file_path, 'rb') as f:
    model = pickle.load(f)
-Load the dataframe skeleton for prediction
+# Load the dataframe skeleton for prediction
 df_skeleton = pd.read_csv('df_skeleton.csv', index_col = 0)
 # Load the brand_list
 brand_list = pickle.load(open('brand_list.pkl', 'rb'))
