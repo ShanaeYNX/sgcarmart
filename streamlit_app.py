@@ -10,19 +10,19 @@ import os
 
 file_path = 'final_model.pkl.gz'
 
-if os.path.exists(file_path):
-    st.success(print(f"Found file at {file_path}"))
-else:
-    st.success(print(f"File not found at {file_path}"))
+# if os.path.exists(file_path):
+#     st.success(print(f"Found file at {file_path}"))
+# else:
+#     st.success(print(f"File not found at {file_path}"))
 
 st.write("""
 # Predicting Used Car Prices
 This app predicts the **recommended car listing price** and its **yearly depreciation** using features input via the **side panel** 
 """)
 #Load the model
-#with gzip.open(file_path, 'rb') as f:
-#    model = pickle.load(f)
-# Load the dataframe skeleton for prediction
+with gzip.open(file_path, 'rb') as f:
+   model = pickle.load(f)
+Load the dataframe skeleton for prediction
 df_skeleton = pd.read_csv('df_skeleton.csv', index_col = 0)
 # Load the brand_list
 brand_list = pickle.load(open('brand_list.pkl', 'rb'))
