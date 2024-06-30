@@ -7,7 +7,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 import requests
 
-download_url = "https://github.com/username/repository/releases/download/vX.Y.Z/final_model.pkl"
+download_url = "https://github.com/ShanaeYNX/sgcarmart/releases/tag/v1.0.0/final_model.pkl"
 
 # Download the file
 r = requests.get(download_url)
