@@ -132,7 +132,7 @@ df_skeleton[columns_to_scale] = scaler.transform(df_skeleton[columns_to_scale])
 # when 'Predict' is clicked, make the prediction and store it
 if st.sidebar.button("Predict"):
     # Predict the result
-    result = model.predict(df_skeleton.values)[0]
+    result = model.predict(df_skeleton.values)
     
     # Format result to 2 decimal places
     formatted_result = '${:,.2f}'.format(result)
