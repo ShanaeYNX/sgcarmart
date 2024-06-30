@@ -6,14 +6,13 @@ import pickle
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 
-#Load the model
-model = RandomForestRegressor()
-model.load_model('final_model.model')
 
 st.write("""
 # Predicting Used Car Prices
 This app predicts the **recommended car listing price** and its **yearly depreciation** using features input via the **side panel** 
 """)
+#Load the model
+model = pickle.load(open('final_model.pkl', 'rb'))
 # Load the dataframe skeleton for prediction
 df_skeleton = pd.read_csv('df_skeleton.csv', index_col = 0)
 # Load the brand_list
