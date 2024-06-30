@@ -10,10 +10,10 @@ import os
 
 file_path = 'final_model.pkl.gz'
 
-# if os.path.exists(file_path):
-#     st.success(print(f"Found file at {file_path}"))
-# else:
-#     st.success(print(f"File not found at {file_path}"))
+if os.path.exists(file_path):
+    st.success(f"Found file at {file_path}")
+else:
+    st.success(f"File not found at {file_path}")
 
 st.write("""
 # Predicting Used Car Prices
