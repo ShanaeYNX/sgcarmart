@@ -19,6 +19,14 @@ st.success(sklearn.__version__)
 # else:
 #     st.success(f"File not found at {file_path}")
 
+#train the model
+model = RandomForestRegressor(bootstrap=False, max_depth=15, max_features=0.5, min_samples_leaf=1, min_samples_split=2, n_estimators=200, random_state=2024)
+
+X_train = pd.read_csv('sg_used_cars_X_train')
+y_train = pd.read_csv('sg_used_cars_y_train')
+model.fit(X_train, y_train)
+
+
 st.write("""
 # Predicting Used Car Prices
 This app predicts the **recommended car listing price** and its **yearly depreciation** using features input via the **side panel** 
@@ -26,7 +34,7 @@ This app predicts the **recommended car listing price** and its **yearly depreci
 # Load the model
 # with gzip.open(file_path, 'rb') as f:
 #    model = pickle.load(f)
-loaded_model = joblib.load('final_model.joblib')
+# loaded_model = joblib.load('final_model.joblib')
 # Load the dataframe skeleton for prediction
 df_skeleton = pd.read_csv('df_skeleton.csv', index_col = 0)
 # Load the brand_list
