@@ -4,10 +4,10 @@ import streamlit as st
 from datetime import date
 import pickle
 import pandas as pd
-import xgboost as xgb
+from sklearn.ensemble import RandomForestRegressor
 
 #Load the model
-model = xgb.XGBRegressor()
+model = RandomForestRegressor()
 model.load_model('final_model.model')
 
 st.write("""
