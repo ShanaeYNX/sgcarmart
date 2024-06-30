@@ -10,6 +10,8 @@ import os
 
 file_path = 'final_model.pkl.gz'
 
+st.success(sklearn.__version__)
+
 if os.path.exists(file_path):
     st.success(f"Found file at {file_path}")
 else:
