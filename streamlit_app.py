@@ -7,6 +7,13 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 import gzip
 
+file_path = 'final_model.pkl.gz'
+
+if os.path.exists(file_path):
+    print(f"Found file at {file_path}")
+else:
+    print(f"File not found at {file_path}")
+
 st.write("""
 # Predicting Used Car Prices
 This app predicts the **recommended car listing price** and its **yearly depreciation** using features input via the **side panel** 
