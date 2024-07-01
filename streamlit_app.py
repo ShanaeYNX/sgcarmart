@@ -17,9 +17,6 @@ This app predicts the **recommended car listing price** and its **yearly depreci
 
 The random forest model is utilized for its ability to handle complex relationships in data and provide robust predictions.
 
-##### Features:
-- Input features such as mileage, year of manufacture, brand, etc., are used to estimate the car's listing price.
-
 ##### Methodology:
 1. **Data Preprocessing**: Cleaning and transforming data to ensure compatibility with the model.
 2. **Model Training**: Training the random forest model using scraped used car data.
