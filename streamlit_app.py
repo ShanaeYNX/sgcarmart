@@ -13,19 +13,19 @@ st.write("""
 
 This app predicts the **recommended car listing price** and its **yearly depreciation** based on features input via the **side panel**.
 
-### Algorithm: Random Forest Model
+##### Algorithm: Random Forest Model
 
 The random forest model is utilized for its ability to handle complex relationships in data and provide robust predictions.
 
-### Features:
+##### Features:
 - Input features such as mileage, year of manufacture, brand, etc., are used to estimate the car's listing price.
 
-### Methodology:
+##### Methodology:
 1. **Data Preprocessing**: Cleaning and transforming data to ensure compatibility with the model.
 2. **Model Training**: Training the random forest model using scraped used car data.
 3. **Prediction**: Predicting recommended car listing prices based on user-provided features.
 
-### How to Use:
+##### How to Use:
 - **Side Panel**: Enter the required details.
 - **Output**: Receive predictions for recommended listing price and expected yearly depreciation.
 
