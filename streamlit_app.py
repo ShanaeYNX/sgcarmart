@@ -17,7 +17,7 @@ The random forest model is utilized for its ability to handle complex relationsh
 
 ##### Methodology:
 1. **Data Preprocessing**: Cleaning and transforming data to ensure compatibility with the model.
-2. **Model Training**: Training the random forest model using scraped used car data.
+2. **Model Training**: Training the random forest model using scraped used car listings from SGCarMart's website.
 3. **Prediction**: Predicting recommended car listing prices based on user-provided features.
 
 ##### How to Use:
