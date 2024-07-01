@@ -11,7 +11,7 @@ import gzip
 st.write("""
 # Predicting Used Car Prices
 
-This application aims to assist in pricing decisions for used cars, providing insights into market values and depreciation trends.
+This application aims to assist users to make informed decisions tailored to their pricing strategy, providing insights into market values and depreciation trends.
 
 ##### Algorithm: Random Forest Model
 
