@@ -11,6 +11,8 @@ import gzip
 st.write("""
 # Predicting Used Car Prices
 
+This application aims to assist in pricing decisions for used cars, providing insights into market values and depreciation trends.
+
 ##### Algorithm: Random Forest Model
 
 The random forest model is utilized for its ability to handle complex relationships in data and provide robust predictions.
@@ -23,8 +25,6 @@ The random forest model is utilized for its ability to handle complex relationsh
 ##### How to Use:
 - **Side Panel**: Enter the required details.
 - **Output**: Receive predictions for recommended listing price and expected yearly depreciation.
-
-This application aims to assist in pricing decisions for used cars, providing insights into market values and depreciation trends.
 
 """)
 
